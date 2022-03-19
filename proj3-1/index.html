@@ -1,7 +1,160 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Project 3-1 here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Your Name  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 3: PathTracer</h1>
+    <h2 align="middle">Young Hoon Kang and Jeremy Ahn</h2>
+
+    <h2 align="middle">Part 1: Ray Generation and Intersection</h2>
+        <p>For ray generation, we incorporated a lot of the information given in the specs. We define an axis-aligned rectangular virtual camera sensor that lies on the Z = -1 plane. We set that the bottom left corner is at (-tan(hFov/2), -tan(vFov/2), -1) and the top right corner is at (tan(hFov/2), tan(vFov/2), -1). Then, we put it into Camera space and then changed into World space by multiplying c2w with the vector in camera space. Then we normalize the vector and return it. </p>
+        <p>Then, based on the number of samples, we generated random rays and then called est_radiance_global_illumination to estimate the scene radiance along that ray. Then, we updated the pixel based on the scene radiance along that ray.</p>
+        <p>For the triangle has_intersection function, we created the edges and the sides of the triangles. Then we incorporate these edges and sides to create the barycentric coordinates, which is then used to find the t-value. After this, we use the t-value and the coordinates to check whether or not there is an intersection. If it satisfies the fact that the t-value is between the min_t and the max_t and the coordinates are both greater than 0 individually and added, they are greater than 1. If they pass all of these checks, then we update the ray’s max_t and then we can state that there is an intersection. If not, we return false.</p>
+        <p>For the triangle intersect function, we created the edges and sides again and used them to create the barycentric coordinates. Then we found the t-value and incorporated it with the coordinates to check the same things as the has_intersection. If all the checks pass, we know that there is an intersection now and can set the ray’s max_t to t. Then we set the intersection’s bsdf, t-value, primitive, and n and we return true.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P1-1.png" width="280px" />
+                    <img src="images/P1-2.png" width="280px" />
+                    <img src="images/P1-3.png" width="280px" />
+                    <img src="images/P1-4.png" width="280px" />
+                    <figcaption align="middle">Created from CBempty.dae, banana.dae, and CBspheres_lambertian.dae</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 2: Bounding Volume Hierarchy</h2>
+        <p>In our BVH construction algorithm, we first create a new node object then we create a base case which ensures that our recursion calls will eventually end by returning a node. If the base case isn’t satisfied, we found our split points using the mean centroids and then found the axis that yielded the smallest cost of splitting. Then, we looped through each primitive from start to end and depending on the splitting axis, added to each left or right node. Afterwards, we went through each left and right node and expanded the nodes. Then we found the left node's end and right node’s start so that we could use it as the starting point for the right nodes and the end of the left nodes in the recursive calls. </p>
+        <p>The heuristic I decided to use is mean centroid and this is because we believe that the median can be easily skewed and may be an inaccurate and inefficient method of splitting in certain cases.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P2-4.png" width="380px" />
+                    <img src="images/P2-5.png" width="380px" />
+                    <img src="images/P2-6.png" width="380px" />
+                    <figcaption align="middle">The heuristic I decided to use is mean centroid and this is because we believe that the median can be easily skewed and may be an inaccurate and inefficient method of splitting in certain cases.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P2-1.png" width="380px" />
+                    <img src="images/P2-2.png" width="380px" />
+                    <img src="images/P2-3.png" width="380px" />
+                    <figcaption align="middle">With the implementation of BVH, we saw a huge jump in the speed of the construction of complex geometries. For reference, the cow.dae without BVH file took nearly 2 minutes and 30 seconds to render, compared to when it only took about a second to render the same file but this time with BVH implemented. </figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 3: Direct Illumination</h2>
+        <p>For the implementation of the hemisphere-illumination, we first loop through each sample and for each sample, we get a random object-space vector as the input and create a ray using the origin as the sum of the hit point of the ray and the multiplication of the epsilon constant and destination and destination as multiplication between matrices for object-to-world space and input. We check if the cosine of the input is positive and that there is an intersection. If this check is satisfied, we use the Monte Carlo estimator to calculate L_out. The implementation of importance-illumination is similar to hemisphere-illumination but we now take the distance to light and pdf into consideration. We also only sample once if the light we are sampling is a delta light and we use the newly acquired information to get an emitted radiance that we later added to our Monte Carlo estimator. </p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P3-2.png" width="380px" />
+                    <img src="images/P3-3.png" width="380px" />
+                    <figcaption align="middle">Direct Lighting with Uniform Hemisphere Sampling</figcaption>
+                    <img src="images/P3-4.png" width="380px" />
+                    <img src="images/P3-5.png" width="380px" />
+                    <figcaption align="middle">Direct Lighting by Importance Sampling Lights</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P3-6.png" width="380px" />
+                    <img src="images/P3-7.png" width="380px" />
+                    <img src="images/P3-8.png" width="380px" />
+                    <img src="images/P3-9.png" width="380px" />
+                    <figcaption align="middle">When comparing the results of uniform hemisphere sampling and lighting sampling, we noticed that these two different types of sampling produce dramatically different results. With uniform hemisphere sampling, we saw that our images tend to be more grainy and spotty. Lighting sampling, on the other hand, produces finer and smoother images, with only the dark and shadow areas being the only places that are noticeably grainy. </figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 4: Global Illumination</h2>
+        <p>While calculating the one-bounce radiance improved our images, they’re far from ideal; we needed a way to account for more than one bounce, thus leading us to create the method, at_least_one_bounce_radiance. Because this function accounts for one or more bounces, we used our previously implemented function, one_bounce_radiance in our new method. We found this function to be similar to our implementation of hemisphere-illumination, but unlike before, we used a recursion to track future bounces of a ray. We also implemented Russian Roulette as a way of randomly and unbiasedly ending the sampling. As suggested in the specs, we decided to use a termination probability of 0.3 to decide if we sample or not. If we decide to, we check our ray’s depth and make sure it is greater than 1. </p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P4-13.png" width="380px" />
+                    <figcaption align="middle">Direct Illumination</figcaption>
+                    <img src="images/P4-11.png" width="380px" />
+                    <figcaption align="middle">Indirect Illumination</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>The main contrast between the indirect and direct is that direct casts a much darker and more evident shadow near the bunny. On the other hand, indirect casts a much softer and lighter shadow that replicates a more accurate representation of how shadows operate with a light source. </p>
+
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P4-8.png" width="380px" />
+                    <img src="images/P4-9.png" width="380px" />
+                    <img src="images/P4-10.png" width="380px" />
+                    <img src="images/P4-11.png" width="380px" />
+                    <img src="images/P4-12.png" width="380px" />
+                    <figcaption align="middle">As we increase the max_ray_depth, we notice the brightening of the image, however, past m = 2, the difference between higher iterations of the max_depth is much smaller from m = 0 and m = 1 and even between m = 1 and m = 2.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P4-1.png" width="380px" />
+                    <img src="images/P4-2.png" width="380px" />
+                    <img src="images/P4-3.png" width="380px" />
+                    <img src="images/P4-4.png" width="380px" />
+                    <img src="images/P4-5.png" width="380px" />
+                    <img src="images/P4-6.png" width="380px" />
+                    <img src="images/P4-7.png" width="380px" />
+                    <figcaption align="middle">As we increase the sample-per pixel rate, the image becomes less grainy and a lot clearer, filling in a lot of the gaps of color that were missing.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 5: Adaptive Sampling</h2>
+        <p>My implementation of adaptive sampling incorporates detecting whether the pixel has converged as we trace ray samples through it. As we loop through the num_samples, we don’t check the pixel’s convergence for each sample, and so we only check whether a pixel has converged every samplesPerBatch pixels. So whenever we check a pixel’s convergence, we calculate the mean and the variance using the formulas in the specs. Then I calculate I by square rooting the variance and current n and multiplying it by 1.96. After this, if I is less than or equal to the maxTolerance(which would be 0.05 by default) * mean. If this statement turns out to be true, then we assume that the pixel has converged and stop tracing more rays for this pixel. If not, then we continue and get a grid sample. After we create a new ray with the grid sample, the origin coordinates, and the sample buffer, we set its depth to be the max_ray_depth. Then we calculate the illuminance to add to the s1 and s2(we add it squared) variables. We also add the est_radiance_global_illumination of the ray we created to the total radiance. Finally, we get the total radiance and divide by n to create the final Vector which we will use to update the pixel in our sample buffer and also update our samplecountBuffer.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/P5-1_rate.png" width="380px" />
+                    <figcaption align="middle">The Sample Rate Image</figcaption>
+                    <img src="images/P5-1.png" width="380px" />
+                    <figcaption align="middle">The Noise-Free Rendered Result</figcaption>
+                </tr>
+            </table>
+        </div>
+    <a class = "link" href="https://cal-cs184-student.github.io/sp22-project-webpages-jimkang126/"> Web Page</a>
+	<p>Link is : https://cal-cs184-student.github.io/sp22-project-webpages-jimkang126/</p>
+</div>
+</body>
 </html>
+
+
+
+
