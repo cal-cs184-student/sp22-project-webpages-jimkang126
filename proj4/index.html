@@ -2,6 +2,186 @@
 	<head>
 	</head>
 	<body>
-		Project 4 here
+		<h1 align="middle">Assignment 4: Cloth Sim</h1>
+    	<h2 align="middle">Young Hoon Kang and Jeremy Ahn</h2>
+
+		<h2 align="middle">Part 1: Masses and Springs</h2>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/noshearing.png" width="280px" />
+					<img src="imgs/justshearing.png" width="280px" />
+					<img src="imgs/noconstraints.png" width="280px" />
+					<figcaption align="middle">No shearing, Just shearing, No constraints</figcaption>
+                </tr>
+            </table>
+        </div>
+
+		<h2 align="middle">Part 2: Simulation Via Numerical Integration</h2>
+
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/P2reg.png" width="280px" />
+					<figcaption align="middle">This is the shaded cloth in its resting state with the regular parameters</figcaption>
+                </tr>
+            </table>
+        </div>
+		<p></p>
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/P2lowerks.png" width="280px" />
+					<img src="imgs/P2higherks.png" width="280px" />
+					<figcaption align="middle">If we decrease the constant ks, the cloth becomes more bouncy and drops to a deeper level, as you can see in the picture to the left above. Increasing ks causes the cloth to become less bouncy and barely drops down to its resting state, as you can see in the picture above to the right.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/P2lowerdensity.png" width="280px" />
+					<img src="imgs/P2higherdensity.png" width="280px" />
+					<figcaption align="middle">If we decrease the density, the same effect happens if we increase ks: the cloth becomes less volatile, as you can see in the picture above to your left. If we increase the density, the same effect happens if we decrease the ks: the cloth becomes more prone to rebound, as you can see in the picture above to your right.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/P2higherdamping.png" width="280px" />
+					<img src="imgs/P2lowerdamping.png" width="280px" />
+					<figcaption align="middle">If we increase the damping, the cloth seems to have air resistance and falls to its resting state a lot slower, with its resting state shown in the picture above to the left. It also seems to have a similar effect of blowing up a balloon. If we decrease the damping, the cloth becomes much more volatile and appears restless, as you can see in the picture above to the right.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+		<h2 align="middle">Part 3: Handling Collisions With Other Objects</h2>
+
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+					<img src="imgs/500ks.png" width="280px" />
+                    <img src="imgs/resting.png" width="280px" />
+					<img src="imgs/50000ks.png" width="280px" />
+					<figcaption align="middle">Left: 500ks, Middle: 5000ks(default), Right: 50000ks</figcaption>
+					<p align="middle">As you can see, as we decrease the ks to 500, there are more folds and the piece of cloth looks much more thin and draped down and as we increase the ks to 50000, the piece of cloth looks more stiff and unwilling to fall fully onto the sphere.</p>
+                </tr>
+            </table>
+        </div>
+
+		<h2 align="middle">Part 4: Handling Self-Collisions</h2>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/fall1.png" width="280px" />
+					<img src="imgs/fall2.png" width="280px" />
+					<img src="imgs/fall3.png" width="280px" />
+					<img src="imgs/fall4.png" width="280px" />
+					<figcaption align="middle">This is the behavior of the cloth as falls and folds on itself.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/density15.png" width="280px" />
+					<figcaption align="middle">Regular cloth behavior at its early state when density is 15g/cm^2 and ks is 5000 N/m. </figcaption>
+					<img src="imgs/density1-5mil.png" width="280px" />
+					<figcaption align="middle">If we increase just the density to 1500000 g/cm^2 then you can see that there are a lot more folds within the piece of cloth as it falls, creating much more self collisions as it falls.</figcaption>
+					<img src="imgs/ks-5.png" width="280px" />
+					<figcaption align="middle">The same effect as increasing the density is seen as we decrease the ks. When I left density as is and decrease the ks to 5 N/m, a lot more self collisions and folds are portrayed.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+		<h2 align="middle">Part 5: Shaders</h2>
+		<p>Shader program is a program used to render graphics at some stage of a graphic processor. They are isolated programs that run in parallel on the GPU, executing sections of the graphics pipeline, taking in an input, and outputting a single 4 dimensional vector. Vertex and fragment shaders work to create a smoother graphic image by breaking segments of the image into smaller bits so that fragment shader can process these small segments and rasterize a much smoother and accurate image output.</p>
+		<br>
+		<p>Blinn-Phong shading is a method of shading that is expensive, but allows the calculation of the dot product between the viewer and light beam. This calculation is done on each vertex.</p>
+		
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/P5ambient.png" width="280px" />
+					<img src="imgs/P5diffuse.png" width="280px" />
+					<img src="imgs/P5specular.png" width="280px" />
+					<img src="imgs/P5entiremodel.png" width="280px" />
+					<figcaption align="middle">Above we see our Blinn-Phong output as just the ambient component, the diffuse component, the specular component, and lastly our entire model, respectively.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/customtexture.jpg" width="280px" />
+					<img src="imgs/P5texturemapping.png" width="280px" />
+					<figcaption align="middle">We used an among us custom texture and got the above texture mapping shader(right picture).</figcaption>
+                </tr>
+            </table>
+        </div>
+		
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/P5bumpcloth16.png" width="280px" />
+					<img src="imgs/P5bumpsphere16.png" width="280px" />
+					<figcaption align="middle">Bump Mapping on Cloth and Sphere</figcaption>
+					<img src="imgs/P5displacementsphere16.png" width="280px" />
+					<figcaption align="middle">Displacement Mapping on Sphere</figcaption>
+                </tr>
+            </table>
+        </div>
+		<p>Because displacement modifies the position of vertices to reflect the height map in addition to modifying the normals so it would be consistent with the new geometry, we detect small but noticeable edges that add detail to our sphere in displacement compared to bump.</p>
+
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/P5bumpsphere16.png" width="280px" />
+					<img src="imgs/P5bumpsphere128.png" width="280px" />
+					<figcaption align="middle">Bump Mapping on Sphere(16 vs 128)</figcaption>
+					<img src="imgs/P5displacementsphere16.png" width="280px" />
+					<img src="imgs/P5displacementsphere128.png" width="280px" />
+					<figcaption align="middle">Displacement Mapping on Sphere(16 vs 128)</figcaption>
+					<img src="imgs/P5bumpclothonsphere16.png" width="280px" />
+					<img src="imgs/P5bumpspherewithcloth128.png" width="280px" />
+					<figcaption align="middle">Bump Mapping on Cloth on Sphere(16 vs 128)</figcaption>
+					<img src="imgs/P5displacementwithcloth16.png" width="280px" />
+					<img src="imgs/P5displacementclothonsphere128.png" width="280px" />
+					<figcaption align="middle">Displacement Mapping on Cloth on Sphere(16 vs 128)</figcaption>
+                </tr>
+            </table>
+        </div>
+		<p>When we changed the coarseness from 16 to 128, we noticed very minimal changes between the two spheres. We did observe more jagged edges when doing displacement which lead to more details when the cloth did cover the sphere. We also observed more fine detail on the 128 bump compared to 16, but we found it to be very small and hard to notice.</p>
+
+		<div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="imgs/P5mirrorcloth.png" width="280px" />
+					<img src="imgs/P5mirrorsphere.png" width="280px" />
+					<figcaption align="middle">Above we see our mirror shader on the cloth(left picture) and on the sphere(right picture).</figcaption>
+                </tr>
+            </table>
+        </div>
+
+		<a class = "link" href="https://cal-cs184-student.github.io/sp22-project-webpages-jimkang126/"> Web Page</a>
+		<p>Link is : https://cal-cs184-student.github.io/sp22-project-webpages-jimkang126/</p>
 	</body>
 </html>
